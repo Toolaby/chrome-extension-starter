@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* Light by default; <html data-theme="dark"> (set by lib/theme.ts from your settings or the system) turns dark. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* The palette. Every surface and every text colour comes from here, so a new brand is one block of edits. */
+:root {
+  --bg: oklch(0.985 0.002 106);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.966 0.003 106);
+  --ink: oklch(0.18 0.006 270);
+  --ink-2: oklch(0.36 0.008 270);
+  --muted: oklch(0.55 0.01 270);
+  --line: oklch(0.915 0.004 270);
+  --line-strong: oklch(0.86 0.006 270);
+  --accent: oklch(0.92 0.2 121);        /* the lime: fills, glows and meters, never text on white */
+  --accent-ink: oklch(0.2 0.03 125);    /* text on the lime */
+  --accent-soft: oklch(0.96 0.08 121);
+  --primary: var(--ink);                /* the main button: ink on paper here, lime on ink in the dark */
+  --primary-fg: oklch(0.99 0 0);
+  --danger: oklch(0.58 0.2 27);
+  --glow: oklch(0.92 0.2 121 / 0.35);
+  --shadow: 0 1px 0 oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.06), 0 8px 24px -12px oklch(0 0 0 / 0.12);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg: oklch(0.145 0.004 270);
+  --surface: oklch(0.18 0.005 270);
+  --surface-2: oklch(0.215 0.006 270);
+  --ink: oklch(0.97 0.003 270);
+  --ink-2: oklch(0.82 0.006 270);
+  --muted: oklch(0.64 0.01 270);
+  --line: oklch(1 0 0 / 0.08);
+  --line-strong: oklch(1 0 0 / 0.14);
+  --accent-soft: oklch(0.92 0.2 121 / 0.12);
+  --primary: var(--accent);
+  --primary-fg: var(--accent-ink);
+  --glow: oklch(0.92 0.2 121 / 0.14);
+  --shadow: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 12px 32px -16px oklch(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', monospace;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-danger: var(--danger);
+  --shadow-card: var(--shadow);
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body { margin: 0; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  button { cursor: pointer; }
+  button:disabled { cursor: default; }
+}
+
+@utility tabular { font-variant-numeric: tabular-nums; }
+
+/* A thin, quiet scrollbar for lists inside the popup and the side panel. */
+@utility scroll-quiet {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* The moving edge of the Pro badge and the primary card's light. */
+@keyframes shimmer { to { background-position: 200% center; } }
+@keyframes skeleton { 50% { opacity: 0.5; } }
