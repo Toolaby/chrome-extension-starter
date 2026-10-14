@@ -6,6 +6,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   vite: () => ({ plugins: [tailwindcss()] }),
+  // `npm run dev` opens Chrome on an article with the extension loaded. Its profile is kept in .wxt/ (git ignores
+  // it), so your Toolaby sign-in and test purchases are still there the next time.
+  webExt: {
+    startUrls: ['https://en.wikipedia.org/wiki/Speed_reading'],
+    chromiumArgs: ['--user-data-dir=./.wxt/chrome-data'],
+  },
   manifest: {
     name: 'Glance',
     description: 'Know any page at a glance: read time, words and the outline. Copy it as Markdown, or read it in Focus mode.',

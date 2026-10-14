@@ -26,9 +26,17 @@ npm run setup
 npm run dev
 ```
 
-`npm run setup` signs you in to Toolaby, makes your tool with a Free plan (3 copies a day) and a Pro plan ($4 a month with a 7-day trial, or $29 once, both with Focus mode), and wires this folder to it: your tool's key in `toolaby.config.js`, and `TOOLABY.md` and the skills your coding agent reads. It runs on Test, where nothing is charged: buy Pro with the card `4242 4242 4242 4242`, any future date and any code.
+`npm run setup` walks you through it in the terminal:
 
-`npm run dev` opens Chrome with the extension loaded and reloads it as you edit. Click its icon on any article.
+1. Sign in to Toolaby. Press Enter and the sign-in page opens in your browser, with the code to approve. No account yet? The same page makes one, with Google or an email link.
+2. Name your extension.
+3. It makes your tool with a Free plan (3 copies a day) and Pro ($4 a month with a 7-day trial, or $29 once, both with Focus mode), and wires this folder to it: your tool's key in `toolaby.config.js`, and `TOOLABY.md` and the skills your coding agent reads.
+
+Run it again any time: it offers to use the tool you made last time. Everything is on Test, where nothing is charged: buy Pro with the card `4242 4242 4242 4242`, any future date and any CVC.
+
+`npm run dev` opens a separate Chrome window on an article, with the extension loaded, and reloads it as you edit. Pin it from the puzzle piece in the toolbar, then click it. That window keeps its own profile in `.wxt/`, so your test sign-in and purchases are still there next time. The `localhost:3000` address in the terminal is WXT's reload server, not a page to open.
+
+To use your everyday Chrome instead: open `chrome://extensions`, turn on Developer mode, choose Load unpacked, and pick `.output/chrome-mv3-dev`.
 
 ## What is in it
 
@@ -121,8 +129,8 @@ The extension's code is yours. To sell through something else, delete `toolaby.*
 
 | | |
 | --- | --- |
-| `npm run setup` | Your Toolaby tool, made and wired (`-- --tool <id>` wires an existing one) |
-| `npm run dev` | Chrome with the extension loaded, reloading as you edit |
+| `npm run setup` | Sign in, make your Toolaby tool and wire this folder (`-- --tool <id>` wires a tool you have; `-- --yes` takes the defaults) |
+| `npm run dev` | A Chrome window on an article, with the extension loaded and reloading as you edit |
 | `npm run build` | A production build in `.output/chrome-mv3` |
 | `npm run zip` | The Chrome Web Store zip |
 | `npm run check` | Types and tests, as CI runs them |
