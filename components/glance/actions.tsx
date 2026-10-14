@@ -61,7 +61,6 @@ export function Actions({ user, hasFocus, tabId, onFocused }: { user: User | nul
         <span className="inline-flex items-center gap-2.5"><Focus className="size-[17px]" />Focus mode</span>
         {hasFocus ? <span className="text-[12px] font-normal text-muted">Esc to leave</span> : <span className="inline-flex items-center gap-1.5"><Lock className="size-3.5 text-muted" /><ProBadge /></span>}
       </Button>
-      {left && <p className="px-1 text-center text-[12px] text-muted">{left.text}. <button className="font-medium text-ink underline decoration-line-strong underline-offset-[3px] hover:decoration-ink" onClick={() => void toolaby.openPaymentPage()}>Go unlimited</button></p>}
     </div>
   );
 }

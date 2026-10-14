@@ -27,7 +27,7 @@ export function App() {
 
   return (
     <Toaster>
-      <main className="flex w-[360px] flex-col gap-5 bg-bg p-4 pb-5">
+      <main className="flex w-[360px] flex-col gap-4 bg-bg p-4">
         <Header url={insights?.url} favicon={insights?.favicon} onPanel={openPanel} idle={state.status === 'error'} />
         {state.status === 'loading' && <InsightsSkeleton />}
         {state.status === 'error' && <PageState error={state.error} />}
@@ -36,7 +36,7 @@ export function App() {
             <InsightsHero insights={insights} compact />
             <section>
               <h2 className="mb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-muted">Outline</h2>
-              <Outline insights={insights} limit={6} />
+              <Outline insights={insights} limit={4} />
             </section>
           </>
         )}

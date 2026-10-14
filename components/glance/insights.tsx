@@ -26,7 +26,7 @@ export function InsightsHero({ insights, compact }: { insights: Insights; compac
           <span className="text-[12px] text-muted">at 238 words a minute</span>
         </span>
       </div>
-      <dl className="mt-5 grid grid-cols-4 overflow-hidden rounded-[14px] border border-line bg-surface">
+      <dl className="mt-4 grid grid-cols-4 overflow-hidden rounded-[14px] border border-line bg-surface">
         {stats.map((s, i) => (
           <motion.div
             key={s.label}

@@ -5,22 +5,35 @@ import { toolaby, type User } from '@/toolaby.js';
  * Who is using the extension, from Toolaby: their plan, the free uses left, and whether they hold Focus mode.
  * Drawn from the device's record at once (no request), then refreshed once, then kept current: a purchase made
  * in another window shows here without reopening.
+ *
+ * Toolaby's state lives in the background, which writes it to chrome.storage; toolaby.onChange is the
+ * background's alone. A page follows it the way Toolaby's client says to: it reads getUser() again when storage
+ * changes, and when the window comes back into focus (from the checkout tab, say).
  */
 export function useToolaby() {
   const [user, setUser] = useState<User | null>(null);
   const [hasFocus, setHasFocus] = useState(false);
   useEffect(() => {
     let live = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const load = async (next?: User) => {
       const u = next ?? (await toolaby.getUser());
       const focus = await toolaby.has('focus');
       if (live) { setUser(u); setHasFocus(focus); }
     };
+    // Several keys change together: read once they have settled.
+    const soon = () => { clearTimeout(timer); timer = setTimeout(() => void load(), 150); };
     void load();
     toolaby.refresh().then((u) => load(u), () => {});
-    const onChange = (u: User) => void load(u);
-    toolaby.onChange.addListener(onChange);
-    return () => { live = false; toolaby.onChange.removeListener(onChange); };
+    const onStorage = (_: unknown, area: string) => { if (area === 'local') soon(); };
+    browser.storage.onChanged.addListener(onStorage);
+    addEventListener('focus', soon);
+    return () => {
+      live = false;
+      clearTimeout(timer);
+      browser.storage.onChanged.removeListener(onStorage);
+      removeEventListener('focus', soon);
+    };
   }, []);
   return { user, hasFocus };
 }

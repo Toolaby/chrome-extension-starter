@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/hero.png" alt="Glance: the popup in light and dark, the side panel, and Focus mode" width="100%">
+  <img src=".github/assets/hero.png" alt="Glance: the popup on the Free plan, Toolaby's paywall for Focus mode, and the side panel" width="100%">
 </p>
 
 # Glance, a Chrome extension starter that takes payments
@@ -26,7 +26,7 @@ npm run setup
 npm run dev
 ```
 
-`npm run setup` signs you in to Toolaby, makes your tool with a Free plan (3 copies a day) and a Pro plan ($4 a month or $29 once, with Focus mode), and wires this folder to it. It runs on Test, where nothing is charged: buy Pro with the card `4242 4242 4242 4242`, any future date and any code.
+`npm run setup` signs you in to Toolaby, makes your tool with a Free plan (3 copies a day) and a Pro plan ($4 a month with a 7-day trial, or $29 once, both with Focus mode), and wires this folder to it: your tool's key in `toolaby.config.js`, and `TOOLABY.md` and the skills your coding agent reads. It runs on Test, where nothing is charged: buy Pro with the card `4242 4242 4242 4242`, any future date and any code.
 
 `npm run dev` opens Chrome with the extension loaded and reloads it as you edit. Click its icon on any article.
 
@@ -38,7 +38,7 @@ npm run dev
 - Settings synced across the person's computers, and a list of pages read lately, with WXT's storage.
 - Toolaby's paywall, sign-in and account bar in front of your popup and side panel, in your colours (Branding in the dashboard).
 - Tests for the page reading and the Markdown converter (Vitest), and a GitHub Actions workflow that type-checks, tests and builds every push.
-- `TOOLABY.md` and skills that coding agents read. With Toolaby's MCP server (`npx -y toolaby@latest agents`), you can ask Claude Code, Cursor or Codex for "a yearly Pro plan at $29" or "make the side panel a Pro feature", and it changes both the code and your plans.
+- `TOOLABY.md` and skills that coding agents read, written for your tool by `npm run setup`. With Toolaby's MCP server (`npx -y toolaby@latest agents`), you can ask Claude Code, Cursor or Codex for "a yearly Pro plan at $29" or "make the side panel a Pro feature", and it changes both the code and your plans.
 
 ## How the paid parts work
 
@@ -63,12 +63,12 @@ if (!r.ok && 'permit' in r) return toolaby.showPaywall(r.permit);
 
 For display, `toolaby.has('focus')` answers from the device without a request, which is how the button shows its lock. It never replaces `gate()`: code on someone's computer can be edited, so the background checks again at the action.
 
-A purchase made in another window shows at once: `useToolaby()` in `hooks/use-toolaby.ts` listens for the change.
+Toolaby's account bar sits at the foot of the popup and the side panel: the free uses left, Sign in, and Upgrade. A purchase made in another window shows at once: `useToolaby()` in `hooks/use-toolaby.ts` reads the account again when Toolaby's state changes.
 
 ## Make it yours
 
 1. Name it: `manifest.name` and `description` in `wxt.config.ts`, and `name` in `package.json`.
-2. Colour it: the tokens at the top of `assets/styles.css`. One block for light, one for dark. Set the same accent under Branding in your Toolaby dashboard, so the paywall matches.
+2. Colour it: the tokens at the top of `assets/styles.css`, one block for light and one for dark. Set the same accent under Branding in your Toolaby dashboard (Glance's lime is `#D2F842`, with `#101114` text on it), so the paywall and the account bar match.
 3. Draw your icon in `assets/brand/icon.svg`, then render it:
    ```bash
    for s in 16 32 48 128; do rsvg-convert -w $s -h $s assets/brand/icon.svg -o public/icon/$s.png; done

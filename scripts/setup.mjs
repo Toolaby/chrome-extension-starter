@@ -70,7 +70,7 @@ ${lime('✔')} ${bold('Glance is yours.')}
   ${bold('npm run dev')}        Chrome opens with Glance loaded. Click its icon on any article.
   ${dim('Buy Pro on Test with the card 4242 4242 4242 4242, any future date, any code.')}
 
-  ${bold('Your dashboard')}     ${dim('prices, the Free plan, buyers, Stripe:')} https://toolaby.app/dev
+  ${bold('Your dashboard')}     ${dim('prices, the Free plan, buyers (Test):')} https://toolaby.app/test/dev
   ${bold('Your agent')}         ${dim('npx -y toolaby@latest agents, then ask:')} "make the side panel a Pro feature"
   ${bold('Ship it')}            ${dim('see "Ship it" in the README: the Live key, then npm run zip')}
 `);
