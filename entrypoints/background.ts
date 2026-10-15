@@ -4,6 +4,7 @@ import type { PageError } from '../lib/messages';
 import { remember, settingsItem } from '../lib/settings';
 import { brand } from '../lib/brand';
 import type { PublicPath } from 'wxt/browser';
+import type { ScriptPublicPath } from 'wxt/utils/inject-script';
 
 export default defineBackground(() => {
   toolaby.startBackground({
@@ -49,13 +50,17 @@ async function copyMarkdown({ tabId }: { tabId?: number }) {
 }
 
 // A Pro feature: only plans that hold `focus` may (Pricing → Features in the dashboard).
+// Not checked against WXT's list of scripts: with Focus mode turned off and focus.content.ts deleted, the list no
+// longer has it, and this never runs.
+const FOCUS_SCRIPT = '/content-scripts/focus.js' as ScriptPublicPath;
+
 async function focus({ tabId }: { tabId?: number }) {
   const permit = await toolaby.gate({ feature: 'focus' });
   if (!permit.allowed) return { ok: false, permit };
   const tab = await target(tabId);
   if (!tab?.id) return fail('no-tab');
   try {
-    await browser.scripting.executeScript({ target: { tabId: tab.id }, files: ['/content-scripts/focus.js'] });
+    await browser.scripting.executeScript({ target: { tabId: tab.id }, files: [FOCUS_SCRIPT] });
     const on = await run(tab.id, () => document.documentElement.hasAttribute('data-glance-focus'));
     return { ok: true, on };
   } catch (e) { return fail(classify(e)); }
