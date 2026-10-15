@@ -3,6 +3,7 @@ import { extractMarkdown, readInsights } from '../lib/page';
 import type { PageError } from '../lib/messages';
 import { remember, settingsItem } from '../lib/settings';
 import { brand } from '../lib/brand';
+import type { PublicPath } from 'wxt/browser';
 
 export default defineBackground(() => {
   toolaby.startBackground({
@@ -26,7 +27,9 @@ export default defineBackground(() => {
   toolaby.onPaid.addListener((user) => console.info(`[${brand.name}] unlocked`, user.plan?.name ?? ''));
 
   browser.runtime.onInstalled.addListener(({ reason }) => {
-    if (reason === 'install' && brand.welcome) void browser.tabs.create({ url: browser.runtime.getURL('/welcome.html') });
+    // As a PublicPath, not checked against the pages: with the welcome page turned off and its folder deleted, WXT's
+    // list of them no longer has it, and this line never runs.
+    if (reason === 'install' && brand.welcome) void browser.tabs.create({ url: browser.runtime.getURL('/welcome.html' as PublicPath) });
   });
 });
 
