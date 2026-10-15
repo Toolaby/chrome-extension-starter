@@ -16,6 +16,8 @@ Glance charges the three ways most extensions do, so you can keep the one you ne
 
 Sign-in, checkout, subscriptions, lifetime licences, the paywall and the customer portal come from [Toolaby](https://toolaby.app). Buyers pay through Stripe, into your own Stripe account.
 
+Want it with your own name, colour, pages and prices from the start? The [extension generator](https://toolaby.app/create) makes this project for you, in your browser.
+
 ## Start
 
 ```bash
