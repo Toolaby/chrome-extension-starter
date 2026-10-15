@@ -136,7 +136,7 @@ async function account() {
   return me.json;
 }
 
-const slugOf = (name) => name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 59) || 'extension';
+const slugOf = (name) => name.toLowerCase().normalize('NFKD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 59) || 'extension';
 
 // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
