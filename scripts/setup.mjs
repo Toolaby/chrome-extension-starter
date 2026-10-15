@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// npm run setup: Glance on your own Toolaby tool, on Test, in about a minute.
+// npm run setup: this extension on your own Toolaby tool, on Test, in about a minute.
 //
 //   1. Sign in to Toolaby: press Enter and the sign-in page opens in your browser. No account yet? The same page
 //      makes one, with Google or an email link.
 //   2. Pick the workspace the extension sells from, when you have more than one.
-//   3. Make the tool (or use the one you made last time), with a Free plan of 3 copies a day and Pro: $4 a month
-//      with a 7-day trial, or $29 once, both with Focus mode.
+//   3. Make the tool (or use the one you made last time) with the Free plan, the Pro plans and the Pro feature in
+//      toolaby.setup.json: out of the box, 3 copies a day free, and Pro at $4 a month with a 7-day trial or $29
+//      once, both with Focus mode.
 //   4. Wire this folder to it: your tool's key, and the files your coding agent reads.
 //
 // Everything happens on Test: no real card is ever charged. Flags, for scripts and coding agents:
@@ -14,7 +15,7 @@
 //   --yes          take every default without asking (sign-in still needs your approval in a browser)
 //   --debug        print Toolaby's raw answers
 import { spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import * as p from '@clack/prompts';
 
 const args = process.argv.slice(2);
@@ -23,13 +24,19 @@ const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1
 const interactive = process.stdin.isTTY && process.stdout.isTTY && !flag('--yes');
 const DEBUG = flag('--debug');
 
-const lime = (s) => `\x1b[38;2;210;248;66m${s}\x1b[39m`;
+const read = (file) => JSON.parse(readFileSync(new URL(`../${file}`, import.meta.url), 'utf8'));
+const brand = read('extension.json');
+const plan = read('toolaby.setup.json');
+
+// The brand's accent, in a terminal that shows colour.
+const [r, g, b] = [1, 3, 5].map((i) => parseInt(brand.accent.slice(i, i + 2), 16));
+const lime = (s) => `\x1b[38;2;${r};${g};${b}m${s}\x1b[39m`;
 const bold = (s) => `\x1b[1m${s}\x1b[22m`;
 const dim = (s) => `\x1b[2m${s}\x1b[22m`;
 const DASHBOARD = 'https://toolaby.app/test/dev';
 
 if (Number(process.versions.node.split('.')[0]) < 20) {
-  console.error(`Glance needs Node.js 20 or later; this is ${process.versions.node}. https://nodejs.org`);
+  console.error(`${brand.name} needs Node.js 20 or later; this is ${process.versions.node}. https://nodejs.org`);
   process.exit(1);
 }
 
@@ -134,7 +141,7 @@ const slugOf = (name) => name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]
 // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 console.log();
-p.intro(`${lime('●')} ${bold('Glance')} ${dim('· set up on Toolaby, on Test: no card is ever charged')}`);
+p.intro(`${lime('●')} ${bold(brand.name)} ${dim('· set up on Toolaby, on Test: no card is ever charged')}`);
 
 let tool = opt('--tool');
 if (!tool) {
@@ -146,11 +153,15 @@ if (!tool) {
     workspace = me.workspaces.find((w) => w.slug === slug);
   }
 
-  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-  const fallback = opt('--name') ?? (pkg.name === 'glance' ? 'Glance' : pkg.name);
+  const fallback = opt('--name') ?? brand.name;
   const name = interactive && !opt('--name')
     ? String(cancelled(await p.text({ message: 'What is your extension called?', placeholder: fallback, defaultValue: fallback, validate: (v) => (v && v.trim().length === 1 ? 'Two characters or more.' : undefined) }))).trim()
     : fallback;
+  // A new name goes into extension.json too, so the extension and its tool on Toolaby agree.
+  if (name !== brand.name) {
+    brand.name = name;
+    writeFileSync(new URL('../extension.json', import.meta.url), `${JSON.stringify(brand, null, 2)}\n`);
+  }
 
   // A tool from an earlier run: use it, or make another beside it.
   const listed = await toolaby(['tools']);
@@ -171,22 +182,37 @@ if (!tool) {
     let id = slug;
     for (let n = 2; taken.has(id); n++) id = `${slug}-${n}`;
     const created = await step('Making your tool', (r) => `Made ${bold(name)} ${dim(r.json.id ?? r.json.tool?.id ?? '')}`,
-      () => toolaby(['tool', 'create', '--name', name, '--id', id, '--workspace', workspace.slug, '--tagline', 'Know any page at a glance.']));
+      () => toolaby(['tool', 'create', '--name', name, '--id', id, '--workspace', workspace.slug, '--tagline', brand.tagline]));
     tool = created.json.id ?? created.json.tool?.id;
     if (!tool) stop('The tool was made, but Toolaby did not say its id.', `Find it at ${DASHBOARD}, then run npm run setup -- --tool <id>.`);
 
-    await step('Setting the Free plan', 'Free plan: 3 copies a day', () =>
-      toolaby(['access', tool, '--access', 'free_uses', '--free-uses', '3', '--free-uses-per', 'day']));
-    const monthly = await step('Adding Pro', 'Pro · Monthly: $4, with a 7-day trial', () =>
-      toolaby(['plan', 'add', tool, '--billing', 'subscription', '--amount', '4', '--currency', 'usd', '--interval', 'month', '--name', 'Pro', '--trial-days', '7']));
-    await step('Adding Pro for good', 'Pro · Lifetime: $29 once', () =>
-      toolaby(['plan', 'add', tool, '--billing', 'one_time', '--amount', '29', '--currency', 'usd', '--name', 'Pro']));
-    // Naming one plan of the Pro tier unlocks the feature for the whole tier: monthly and lifetime.
-    const pro = monthly.json.id ?? monthly.json.plan?.id ?? 'default';
-    await step('Putting Focus mode in Pro', 'Focus mode: in both Pro plans', () =>
-      toolaby(['features', tool,
-        '--features', JSON.stringify([{ key: 'focus', name: 'Focus mode', blurb: 'Everything but the article dims until you press Esc.' }]),
-        '--plans', JSON.stringify([{ id: pro, features: ['focus'] }])]));
+    // What the Free plan holds. A counted action (Copy as Markdown): its free uses, or none before a plan. Without
+    // one, everything but the Pro feature is free.
+    const uses = brand.copyMarkdown ? plan.freeUses : null;
+    const PER = { ever: '', day: ' a day', week: ' a week', month: ' a month' };
+    await step('Setting the Free plan', brand.copyMarkdown ? (uses ? `Free plan: ${uses.count} copies${PER[uses.per]}` : 'Free plan: copies come with Pro') : `Free plan: everything but ${plan.feature?.name ?? 'Pro'}`, () =>
+      toolaby(['access', tool, '--access', brand.copyMarkdown ? (uses ? 'free_uses' : 'paid') : 'open', ...(uses ? ['--free-uses', String(uses.count), '--free-uses-per', uses.per] : [])]));
+
+    const money = (n) => new Intl.NumberFormat('en', { style: 'currency', currency: plan.currency, minimumFractionDigits: n % 1 ? 2 : 0 }).format(n);
+    let pro;
+    for (const pl of plan.plans) {
+      const sub = pl.billing === 'subscription';
+      const interval = pl.interval ?? 'month';
+      const label = sub
+        ? `Pro · ${interval === 'year' ? 'Yearly' : 'Monthly'}: ${money(pl.amount)}${pl.trialDays ? `, with a ${pl.trialDays}-day trial` : ''}`
+        : `Pro · Lifetime: ${money(pl.amount)} once`;
+      const added = await step(`Adding ${label.split(':')[0]}`, label, () =>
+        toolaby(['plan', 'add', tool, '--billing', pl.billing, '--amount', String(pl.amount), '--currency', plan.currency, '--name', 'Pro',
+          ...(sub ? ['--interval', interval] : []), ...(sub && pl.trialDays ? ['--trial-days', String(pl.trialDays)] : [])]));
+      pro ??= added.json.id ?? added.json.plan?.id;
+    }
+
+    // Naming one plan of the Pro tier puts the feature in the whole tier: monthly, yearly and lifetime.
+    const feature = brand.focusMode ? plan.feature : null;
+    if (feature && pro) {
+      await step(`Putting ${feature.name} in Pro`, `${feature.name}: in every Pro plan`, () =>
+        toolaby(['features', tool, '--features', JSON.stringify([feature]), '--plans', JSON.stringify([{ id: pro, features: [feature.key] }])]));
+    }
   }
 }
 
@@ -194,7 +220,7 @@ await step('Wiring this folder', 'Wired: your tool key, and TOOLABY.md for your 
 
 p.note(
   [
-    `${bold('npm run dev')}   Chrome opens on an article with Glance loaded.`,
+    `${bold('npm run dev')}   Chrome opens on an article with ${brand.name} loaded.`,
     `              Pin it: the puzzle piece in the toolbar, then the pin.`,
     `${bold('Test card')}     4242 4242 4242 4242 · any future date · any CVC`,
     `${bold('Dashboard')}     ${DASHBOARD}  ${dim('prices, the Free plan, buyers')}`,
@@ -202,4 +228,4 @@ p.note(
   ].join('\n'),
   'Next',
 );
-p.outro(`${lime('✔')} ${bold('Glance is yours.')} ${dim('To sell it for real, see "Ship it" in the README.')}`);
+p.outro(`${lime('✔')} ${bold(`${brand.name} is yours.`)} ${dim('To sell it for real, see "Ship it" in the README.')}`);

@@ -10,9 +10,9 @@ export function Aurora() {
         @media (prefers-reduced-motion: reduce) { .aurora-blob { animation: none !important } }
       `}</style>
       <div className="absolute left-1/2 top-[-260px] h-[640px] w-[1100px] -translate-x-1/2">
-        <div className="aurora-blob absolute left-[18%] top-[20%] size-[460px] rounded-full opacity-70 blur-[90px] dark:opacity-25" style={{ background: 'oklch(0.92 0.2 121 / .55)', animation: 'drift-a 18s ease-in-out infinite' }} />
-        <div className="aurora-blob absolute right-[16%] top-[14%] size-[420px] rounded-full opacity-60 blur-[100px] dark:opacity-40" style={{ background: 'oklch(0.85 0.12 195 / .45)', animation: 'drift-b 22s ease-in-out infinite' }} />
-        <div className="aurora-blob absolute left-[42%] top-[38%] size-[360px] rounded-full opacity-50 blur-[90px] dark:opacity-15" style={{ background: 'oklch(0.9 0.15 95 / .4)', animation: 'drift-c 26s ease-in-out infinite' }} />
+        <div className="aurora-blob absolute left-[18%] top-[20%] size-[460px] rounded-full opacity-70 blur-[90px] dark:opacity-25" style={{ background: 'color-mix(in oklab, var(--accent) 55%, transparent)', animation: 'drift-a 18s ease-in-out infinite' }} />
+        <div className="aurora-blob absolute right-[16%] top-[14%] size-[420px] rounded-full opacity-60 blur-[100px] dark:opacity-40" style={{ background: 'oklch(from var(--accent) 0.85 calc(c * 0.6) calc(h + 75) / .45)', animation: 'drift-b 22s ease-in-out infinite' }} />
+        <div className="aurora-blob absolute left-[42%] top-[38%] size-[360px] rounded-full opacity-50 blur-[90px] dark:opacity-15" style={{ background: 'oklch(from var(--accent) 0.9 calc(c * 0.75) calc(h - 25) / .4)', animation: 'drift-c 26s ease-in-out infinite' }} />
       </div>
       {/* A dotted field under the light, fading out toward the content. */}
       <div className="absolute inset-0 opacity-[.35] dark:opacity-[.18]"

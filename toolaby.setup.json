@@ -1,0 +1,10 @@
+{
+  "$comment": "What npm run setup makes on Toolaby (Test). After that, your dashboard holds the prices: change them there, or ask your coding agent. The generator at toolaby.app/create writes this file.",
+  "currency": "usd",
+  "freeUses": { "count": 3, "per": "day" },
+  "plans": [
+    { "billing": "subscription", "interval": "month", "amount": 4, "trialDays": 7 },
+    { "billing": "one_time", "amount": 29 }
+  ],
+  "feature": { "key": "focus", "name": "Focus mode", "blurb": "Everything but the article dims until you press Esc." }
+}

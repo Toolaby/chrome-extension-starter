@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { useStored } from '@/hooks/use-stored';
 import { useTheme } from '@/hooks/use-theme';
 import { freeLeft, useToolaby } from '@/hooks/use-toolaby';
+import { brand } from '@/lib/brand';
 import { settingsItem, type Theme } from '@/lib/settings';
 
 export function App() {
@@ -46,6 +47,7 @@ export function App() {
           </Row>
         </Section>
 
+        {brand.copyMarkdown && (
         <Section title="Copy as Markdown">
           <Row label="Images" hint="Keep pictures as ![alt](address).">
             <Switch label="Images" checked={s.markdownImages} onChange={(markdownImages) => void update({ markdownImages })} />
@@ -54,7 +56,9 @@ export function App() {
             <Switch label="Links" checked={s.markdownLinks} onChange={(markdownLinks) => void update({ markdownLinks })} />
           </Row>
         </Section>
+        )}
 
+        {brand.focusMode && (
         <Section title={<span className="inline-flex items-center gap-2">Focus mode <ProBadge /></span>}>
           <Row label="Dim the rest of the page" hint={`${s.focusDim}%: how dark everything around the article goes.`}>
             <input
@@ -65,14 +69,19 @@ export function App() {
             />
           </Row>
         </Section>
+        )}
 
         <footer className="pt-2 text-center text-[12px] text-muted">
-          Glance {browser.runtime.getManifest().version} · Sign-in and payments by <a className="text-ink-2 underline decoration-line-strong underline-offset-[3px]" href="https://toolaby.app" target="_blank" rel="noreferrer">Toolaby</a>
+          {brand.name} {browser.runtime.getManifest().version} · Sign-in and payments by <a className="text-ink-2 underline decoration-line-strong underline-offset-[3px]" href="https://toolaby.app" target="_blank" rel="noreferrer">Toolaby</a>
         </footer>
       </div>
     </div>
   );
 }
+
+// What the Free plan lacks, by the parts this extension has: "Copy as Markdown and Focus mode come with Pro."
+const paid = [brand.copyMarkdown && 'Copy as Markdown', brand.focusMode && 'Focus mode'].filter(Boolean);
+const WITH_PRO = `${paid.join(' and ')} ${paid.length > 1 ? 'come' : 'comes'} with Pro.`;
 
 /** The person's plan, from Toolaby: what they hold, what is left, and the one action that fits. */
 function PlanCard({ user }: { user: User | null }) {
@@ -94,7 +103,7 @@ function PlanCard({ user }: { user: User | null }) {
             <p className="mt-1 text-[13px] text-muted">
               {user?.paid
                 ? sub ? (sub.cancelAtPeriodEnd ? `Ends on ${renews}.` : `Renews on ${renews}.`) : 'Yours for good.'
-                : left ? left.text + '.' : 'Copy as Markdown and Focus mode come with Pro.'}
+                : left ? left.text + '.' : WITH_PRO}
             </p>
             {left && <Meter className="mt-3" remaining={left.remaining} limit={left.limit} />}
           </div>

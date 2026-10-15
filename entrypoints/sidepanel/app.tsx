@@ -13,7 +13,7 @@ import { ago, number, readTime } from '@/lib/format';
 import { historyItem } from '@/lib/settings';
 
 // The side panel stays open beside the page and follows the active tab. Reading a tab needs access to it:
-// activeTab covers the tab where Glance's icon was clicked; "Allow on every site" asks for the optional
+// activeTab covers the tab where the extension's icon was clicked; "Allow on every site" asks for the optional
 // <all_urls> permission, at that moment, for the rest.
 export function App() {
   useTheme();

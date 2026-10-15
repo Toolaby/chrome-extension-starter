@@ -6,9 +6,10 @@ import { PageState } from '@/components/glance/page-state';
 import { useInsights } from '@/hooks/use-insights';
 import { useTheme } from '@/hooks/use-theme';
 import { useToolaby } from '@/hooks/use-toolaby';
+import { brand } from '@/lib/brand';
 
 // The popup is the extension's front room. Toolaby's popup stands in front of it (the module puts it there) and
-// hands over at once while the person may use Glance; Toolaby's account bar sits at its foot.
+// hands over at once while the person may use the extension; Toolaby's account bar sits at its foot.
 // Debugging: open chrome-extension://<id>/popup.html?tab=<tab id> in a tab of its own, with DevTools beside it,
 // and the popup reads that tab instead of the active one.
 const debugTab = Number(new URLSearchParams(location.search).get('tab')) || undefined;
@@ -28,7 +29,7 @@ export function App() {
   return (
     <Toaster>
       <main className="flex w-[360px] flex-col gap-4 bg-bg p-4">
-        <Header url={insights?.url} favicon={insights?.favicon} onPanel={openPanel} idle={state.status === 'error'} />
+        <Header url={insights?.url} favicon={insights?.favicon} onPanel={brand.sidePanel ? openPanel : undefined} idle={state.status === 'error'} />
         {state.status === 'loading' && <InsightsSkeleton />}
         {state.status === 'error' && <PageState error={state.error} />}
         {insights && (

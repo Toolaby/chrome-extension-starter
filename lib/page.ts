@@ -1,4 +1,4 @@
-// The two functions Glance runs inside a page, with chrome.scripting.executeScript({ func }).
+// The two functions the extension runs inside a page, with chrome.scripting.executeScript({ func }).
 //
 // Chrome sends each function into the page as its source text, so each must stand alone: no imports, nothing
 // from outside its own body. That is why the helpers are declared inside them, and why they are plain functions

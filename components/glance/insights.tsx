@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/cn';
 import { readTime } from '@/lib/format';
 import type { Insights } from '@/lib/page';
+import { brand } from '@/lib/brand';
 
 /** The read time, large, and the four counts under it. */
 export function InsightsHero({ insights, compact }: { insights: Insights; compact?: boolean }) {
@@ -66,7 +67,7 @@ export function Outline({ insights, limit }: { insights: Insights; limit?: numbe
         ))}
       </ol>
       {limit && all.length > limit && (
-        <p className="mt-1.5 pl-3 text-[12px] text-muted">+ {all.length - limit} more in the side panel</p>
+        <p className="mt-1.5 pl-3 text-[12px] text-muted">+ {all.length - limit} more{brand.sidePanel ? ' in the side panel' : ''}</p>
       )}
     </div>
   );

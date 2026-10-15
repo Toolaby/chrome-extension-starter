@@ -30,7 +30,7 @@ npm run dev
 
 1. Sign in to Toolaby. Press Enter and the sign-in page opens in your browser, with the code to approve. No account yet? The same page makes one, with Google or an email link.
 2. Name your extension.
-3. It makes your tool with a Free plan (3 copies a day) and Pro ($4 a month with a 7-day trial, or $29 once, both with Focus mode), and wires this folder to it: your tool's key in `toolaby.config.js`, and `TOOLABY.md` and the skills your coding agent reads.
+3. It makes your tool with the plans in `toolaby.setup.json`, a Free plan (3 copies a day) and Pro ($4 a month with a 7-day trial, or $29 once, both with Focus mode), and wires this folder to it: your tool's key in `toolaby.config.js`, and `TOOLABY.md` and the skills your coding agent reads.
 
 Run it again any time: it offers to use the tool you made last time. Everything is on Test, where nothing is charged: buy Pro with the card `4242 4242 4242 4242`, any future date and any CVC.
 
@@ -75,18 +75,29 @@ Toolaby's account bar sits at the foot of the popup and the side panel: the free
 
 ## Make it yours
 
-1. Name it: `manifest.name` and `description` in `wxt.config.ts`, and `name` in `package.json`.
-2. Colour it: the tokens at the top of `assets/styles.css`, one block for light and one for dark. Set the same accent under Branding in your Toolaby dashboard (Glance's lime is `#D2F842`, with `#101114` text on it), so the paywall and the account bar match.
+1. Name it, colour it and choose its parts in `extension.json`:
+
+   | | |
+   | --- | --- |
+   | `name`, `tagline` | Shown in the extension, and given to your tool on Toolaby by `npm run setup` |
+   | `description` | The manifest's, which the Chrome Web Store shows: 132 characters at most |
+   | `accent` | One colour, as hex. Every page, the logo and Focus mode take it, with text that reads on it |
+   | `sidePanel`, `settings`, `welcome` | The side panel, the settings page, the welcome page that opens on install |
+   | `copyMarkdown`, `focusMode` | The counted action and the Pro feature |
+
+   A part turned off disappears from every page. Delete its folder too, so it leaves the build and the manifest: `entrypoints/sidepanel/`, `entrypoints/options/`, `entrypoints/welcome/` or `entrypoints/focus.content.ts`. Set the same accent under Branding in your Toolaby dashboard (Glance's lime is `#D2F842`), so the paywall and the account bar match.
+2. Price it in `toolaby.setup.json`, before `npm run setup`: the free uses and their period, the Pro plans (monthly, yearly or once) and the currency. After setup, your dashboard holds the prices: change them there, or ask your agent. The extension reads them at its next check, with no new build.
 3. Draw your icon in `assets/brand/icon.svg`, then render it:
    ```bash
    for s in 16 32 48 128; do rsvg-convert -w $s -h $s assets/brand/icon.svg -o public/icon/$s.png; done
    ```
 4. Replace the feature: `lib/page.ts` reads the page, `entrypoints/background.ts` runs the actions, `components/glance/` draws them.
-5. Price it in the dashboard, or ask your agent. The extension reads the Free plan and the plans at its next check, with no new build.
 
 ## Layout
 
 ```
+extension.json          the name, the colour and the parts
+toolaby.setup.json      what npm run setup makes on Toolaby
 entrypoints/
   background.ts         the actions, behind toolaby.gate()
   focus.content.ts      Focus mode, injected on demand
@@ -114,7 +125,7 @@ On Live, buyers pay for real. Connect Stripe under Configure → Payments in the
 npx -y toolaby@latest login --live
 npx -y toolaby@latest copy-to-live <tool-id>      # your tool, plans and features, onto Live
 npx -y toolaby@latest upgrade <tool-id> --live    # the Live key into toolaby.config.js
-npm run zip                                       # .output/glance.zip
+npm run zip                                       # .output/extension.zip
 ```
 
 Upload the zip in the [Chrome Web Store developer dashboard](https://chrome.google.com/webstore/devconsole). `npm run zip` refuses a build that still holds a Test key, and leaves out source maps, `.env` files and keys.

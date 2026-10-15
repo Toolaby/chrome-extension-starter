@@ -3,6 +3,7 @@
 // Registered at runtime, so it is not in the manifest's content_scripts and asks for no host permission: the
 // background injects it into the one tab, with activeTab, after toolaby.gate({ feature: 'focus' }) allowed it.
 // Injected again, it switches off. Its UI lives in a closed shadow root, so the page's CSS cannot reach it.
+import { brand } from '../lib/brand';
 import { settingsItem } from '../lib/settings';
 
 type Toggle = { off(): void };
@@ -37,10 +38,10 @@ function start(main: Element, dim: number): Toggle {
   const root = host.attachShadow({ mode: 'closed' });
   root.innerHTML = `
     <style>
-      :host { --dim: ${dim}; }
+      :host { --dim: ${dim}; --accent: ${brand.accent}; }
       .veil { position: fixed; background: rgb(9 9 11 / var(--dim)); backdrop-filter: blur(3px) saturate(0.5); -webkit-backdrop-filter: blur(3px) saturate(0.5);
               opacity: 0; transition: opacity .45s cubic-bezier(.2,.7,.2,1); pointer-events: auto; }
-      .ring { position: fixed; border-radius: 14px; box-shadow: 0 0 0 1px rgb(214 250 82 / .35), 0 0 48px 4px rgb(214 250 82 / .12);
+      .ring { position: fixed; border-radius: 14px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 48px 4px color-mix(in srgb, var(--accent) 12%, transparent);
               opacity: 0; transition: opacity .6s .1s; }
       .on .veil, .on .ring { opacity: 1; }
       .pill { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 12px); opacity: 0; pointer-events: auto; cursor: pointer;
@@ -49,7 +50,7 @@ function start(main: Element, dim: number): Toggle {
               background: rgb(24 24 27 / .82); border: 1px solid rgb(255 255 255 / .1); box-shadow: 0 12px 32px -8px rgb(0 0 0 / .5);
               backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: transform .45s cubic-bezier(.2,.9,.3,1.2), opacity .3s; }
       .on .pill { transform: translate(-50%, 0); opacity: 1; }
-      .dot { width: 7px; height: 7px; border-radius: 50%; background: #d6fa52; box-shadow: 0 0 10px #d6fa52; animation: pulse 2s infinite; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 2s infinite; }
       kbd { font: 500 11px/1 ui-monospace, monospace; padding: 4px 6px; border-radius: 6px; color: #a1a1aa; background: rgb(255 255 255 / .08); }
       @keyframes pulse { 50% { opacity: .45; } }
       @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

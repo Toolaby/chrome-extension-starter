@@ -1,0 +1,11 @@
+{
+  "name": "Glance",
+  "tagline": "Know any page at a glance.",
+  "description": "Know any page at a glance: read time, words and the outline. Copy it as Markdown, or read it in Focus mode.",
+  "accent": "#d2f842",
+  "sidePanel": true,
+  "settings": true,
+  "welcome": true,
+  "copyMarkdown": true,
+  "focusMode": true
+}

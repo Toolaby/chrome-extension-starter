@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
-    "zip": "wxt build && npx -y toolaby@latest pack .output/chrome-mv3 --out .output/glance.zip",
+    "zip": "wxt build && npx -y toolaby@latest pack .output/chrome-mv3 --out .output/extension.zip",
     "setup": "node scripts/setup.mjs",
     "check": "wxt prepare && tsc --noEmit && vitest run",
     "test": "vitest",

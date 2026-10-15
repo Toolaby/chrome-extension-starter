@@ -3,7 +3,7 @@
 import type { Permit } from '../toolaby.js';
 import type { Insights, Markdown } from './page';
 
-/** Why a page could not be read: a browser page no extension may touch, or one Glance was not given yet. */
+/** Why a page could not be read: a browser page no extension may touch, or one the extension was not given yet. */
 export type PageError = 'restricted' | 'no-access' | 'no-tab';
 
 export type Requests = {

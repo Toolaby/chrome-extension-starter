@@ -5,7 +5,7 @@
 /* Light by default; <html data-theme="dark"> (set by lib/theme.ts from your settings or the system) turns dark. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
-/* The palette. Every surface and every text colour comes from here, so a new brand is one block of edits. */
+/* The palette. Every surface and every text colour comes from here; the accent, from extension.json. */
 :root {
   --bg: oklch(0.985 0.002 106);
   --surface: oklch(1 0 0);
@@ -15,13 +15,13 @@
   --muted: oklch(0.55 0.01 270);
   --line: oklch(0.915 0.004 270);
   --line-strong: oklch(0.86 0.006 270);
-  --accent: oklch(0.92 0.2 121);        /* the lime: fills, glows and meters, never text on white */
-  --accent-ink: oklch(0.2 0.03 125);    /* text on the lime */
-  --accent-soft: oklch(0.96 0.08 121);
-  --primary: var(--ink);                /* the main button: ink on paper here, lime on ink in the dark */
+  /* --accent and --accent-ink come from extension.json (lib/brand.ts): the accent fills, glows and meters, and is
+     never text on white; --accent-ink is the text on it. */
+  --accent-soft: color-mix(in oklab, var(--accent) 22%, white);
+  --primary: var(--ink);                /* the main button: ink on paper here, the accent on ink in the dark */
   --primary-fg: oklch(0.99 0 0);
   --danger: oklch(0.58 0.2 27);
-  --glow: oklch(0.92 0.2 121 / 0.35);
+  --glow: color-mix(in oklab, var(--accent) 35%, transparent);
   --shadow: 0 1px 0 oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.06), 0 8px 24px -12px oklch(0 0 0 / 0.12);
   color-scheme: light;
 }
@@ -35,10 +35,10 @@
   --muted: oklch(0.64 0.01 270);
   --line: oklch(1 0 0 / 0.08);
   --line-strong: oklch(1 0 0 / 0.14);
-  --accent-soft: oklch(0.92 0.2 121 / 0.12);
+  --accent-soft: color-mix(in oklab, var(--accent) 12%, transparent);
   --primary: var(--accent);
   --primary-fg: var(--accent-ink);
-  --glow: oklch(0.92 0.2 121 / 0.14);
+  --glow: color-mix(in oklab, var(--accent) 14%, transparent);
   --shadow: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 12px 32px -16px oklch(0 0 0 / 0.6);
   color-scheme: dark;
 }
