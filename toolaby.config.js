@@ -10,5 +10,8 @@ export const config = {
   // Opening the Toolaby popup spends no free use: entrypoints/background.ts counts its own with toolaby.gate() (`wire`
   // writes this from your code).
   countOpens: false,
+  // The page Chrome opens once someone removes the extension: Toolaby's, which asks why and shows a buyer still paying
+  // how to stop. `wire` writes false where your code calls chrome.runtime.setUninstallURL() itself.
+  uninstallPage: true,
   manifestKey: '',
 };
